@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Happy Birthday, My Queen of Bikini Bottom! 🍍🪼</title>
+  
+  <!-- Google Fonts: Whimsical SpongeBob & Nautical Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700;800&family=Luckiest+Guy&family=Sniglet:wght@400;800&family=Pacifico&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
+  
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="style.css" />
+  
+  <!-- Canvas Confetti CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+</head>
+<body class="spongebob-theme">
+
+  <!-- Background Animated Sky Flower Clouds -->
+  <div class="sky-flowers-layer" aria-hidden="true">
+    <div class="flower-cloud flower-1"></div>
+    <div class="flower-cloud flower-2"></div>
+    <div class="flower-cloud flower-3"></div>
+    <div class="flower-cloud flower-4"></div>
+    <div class="flower-cloud flower-5"></div>
+  </div>
+
+  <!-- Interactive Floating Bubbles Canvas -->
+  <canvas id="bubbleCanvas"></canvas>
+
+  <!-- Sound & Music HUD Controls -->
+  <header class="hud-bar" aria-label="Audio & Game Controls">
+    <div class="hud-container">
+      <div class="hud-left">
+        <button id="soundToggleBtn" class="hud-btn" title="Toggle Sound FX" aria-label="Toggle Sound">
+          <span class="hud-icon">🔊</span>
+          <span class="hud-text">SOUND: ON</span>
+        </button>
+        <button id="bgmToggleBtn" class="hud-btn" title="Toggle Tropical Ukulele BGM" aria-label="Toggle BGM">
+          <span class="hud-icon">🎶</span>
+          <span class="hud-text">TROPICAL BGM</span>
+        </button>
+      </div>
+
+      <div class="hud-center">
+        <div class="jelly-counter-badge" id="jellyCounterBadge" title="Jellyfish Caught in Bikini Bottom">
+          <span class="jelly-icon">🪼</span>
+          <span class="jelly-label">JELLIES:</span>
+          <span class="jelly-score" id="jellyScore">0</span>
+        </div>
+      </div>
+
+      <div class="hud-right">
+        <button id="netModeBtn" class="hud-btn active" title="Toggle Jellyfish Net Cursor" aria-label="Toggle Net Mode">
+          <span class="hud-icon">🕸️</span>
+          <span class="hud-text">JELLY NET: ON</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- 1. ENTRANCE GATE: FRENCH NARRATOR TIME CARD -->
+  <div id="narratorModal" class="narrator-overlay active" role="dialog" aria-modal="true" aria-labelledby="narratorTitle">
+    <div class="narrator-time-card">
+      <div class="bamboo-card-border"></div>
+      
+      <!-- SpongeBob Flower Accents -->
+      <div class="card-flower top-left"></div>
+      <div class="card-flower top-right"></div>
+      <div class="card-flower bottom-left"></div>
+      <div class="card-flower bottom-right"></div>
+
+      <div class="narrator-sub-header">★ SPECIAL UNDERWATER BROADCAST ★</div>
+      
+      <div class="narrator-avatar-wrap">
+        <div class="narrator-pineapple-icon">🍍</div>
+        <div class="narrator-stars">✨ 💖 ✨</div>
+      </div>
+
+      <h1 id="narratorTitle" class="narrator-title">
+        "AHHH, ZE BIKINI BOTTOM..."
+      </h1>
+
+      <p class="narrator-text">
+        Down here in the clear blue Pacific Ocean, today is no ordinary day!
+        It is the official birthday of the most beautiful, sweet, and enchanting queen of the Seven Seas:
+        <span class="highlight-queen" id="introQueenName">My Beloved Girlfriend</span>! 👑
+      </p>
+
+      <p class="narrator-subtext">
+        Grab your jellyfish net, put on your Goofy Goober crown, and get ready for a celebration full of love, laughter, and Krabby Patty treats!
+      </p>
+
+      <button id="diveInBtn" class="sponge-primary-btn pulse-glow">
+        <span class="btn-bounce">🍍</span>
+        <span class="btn-main-txt">I'M READY! DIVE INTO BIKINI BOTTOM</span>
+        <span class="btn-sub-txt">Click to start the celebration!</span>
+      </button>
+
+      <div class="narrator-footer-quote">
+        "F.U.N. = Friends & Love who do stuff together!" 💛
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN ADVENTURE CONTAINER -->
+  <main id="mainApp" class="main-content">
+
+    <!-- HERO SECTION: WELCOME SIGN & SPONGEBOB MOVIE TRIBUTE -->
+    <section class="hero-section" id="hero">
+      <!-- Hanging Wooden Signpost -->
+      <div class="wooden-signpost-wrap">
+        <div class="signpost-rope left-rope"></div>
+        <div class="signpost-rope right-rope"></div>
+        <div class="wooden-signboard">
+          <span class="sign-nails top-left-nail"></span>
+          <span class="sign-nails top-right-nail"></span>
+          <span class="sign-nails bottom-left-nail"></span>
+          <span class="sign-nails bottom-right-nail"></span>
+          <div class="sign-welcome-tag">★ BIKINI BOTTOM OFFICIAL DECREE ★</div>
+          <h2 class="sign-main-title">
+            HAPPY BIRTHDAY, <span class="birthday-girl-name" id="heroGirlName">MY SWEET QUEEN</span>! 👑
+          </h2>
+          <p class="sign-sub-msg">You make every single day brighter than SpongeBob's golden spatula!</p>
+        </div>
+      </div>
+
+      <!-- Hero Poster Card Showcase -->
+      <div class="hero-showcase-grid">
+        <div class="hero-poster-card">
+          <div class="poster-bamboo-frame">
+            <img 
+              src="assets/images/spongebob_movie.png" 
+              alt="SpongeBob SquarePants Movie Birthday Crew" 
+              class="hero-movie-img"
+              id="heroMovieImg"
+            />
+            <div class="poster-overlay-shine"></div>
+            <div class="poster-badge">GOOFY GOOBER OF THE YEAR 🍦</div>
+          </div>
+        </div>
+
+        <div class="hero-stats-card">
+          <div class="neptune-crown-badge">
+            <span class="crown-emoji">👑</span>
+            <span class="crown-txt">KING NEPTUNE'S ROYAL DECREE</span>
+          </div>
+
+          <h3 class="stats-headline">The Sweetest Catch in the Entire Ocean</h3>
+          <p class="stats-desc">
+            SpongeBob and Patrick traveled all the way across the Mariana Trench, retrieved King Neptune's crown, and survived Shell City just to declare this truth:
+            <strong>You are 1,000,000% the most precious, gorgeous, and wonderful girlfriend ever!</strong>
+          </p>
+
+          <!-- Quick Navigation Buttons -->
+          <div class="quick-nav-pill-group">
+            <a href="#castWishes" class="quick-pill">👥 Cast Wishes</a>
+            <a href="#jellyGame" class="quick-pill">🪼 Catch Jellyfish</a>
+            <a href="#krabbyBuilder" class="quick-pill">🍔 Love Formula</a>
+            <a href="#bottleLetter" class="quick-pill">📜 Love Letter</a>
+            <a href="#photoGallery" class="quick-pill">📸 Memories</a>
+            <a href="#birthdayCake" class="quick-pill highlight-pill">🎂 Blow Cake!</a>
+          </div>
+
+          <!-- Love Meter / Fun Facts -->
+          <div class="love-meter-box">
+            <div class="meter-header">
+              <span>💖 My Love for You:</span>
+              <span class="meter-percent">10,000,000% (Overflowing!)</span>
+            </div>
+            <div class="meter-track">
+              <div class="meter-fill" style="width: 100%;"></div>
+            </div>
+            <div class="meter-captions">
+              <span>More than all Krabby Patties</span>
+              <span>More than all Neptune's Gold</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 1: 3x3 BIKINI BOTTOM CAST WISHES (MATCHING USER'S BAMBOO GRID IMAGE) -->
+    <section class="cast-section" id="castWishes">
+      <div class="section-title-wrap">
+        <div class="clam-icon">🐚</div>
+        <h2 class="section-title">THE BIKINI BOTTOM CAST WISHES</h2>
+        <p class="section-subtitle">Click on any character to hear their secret birthday message for you!</p>
+      </div>
+
+      <!-- 3x3 Bamboo Grid Container -->
+      <div class="bamboo-grid-container">
+        <!-- Bamboo Frame Outer & Inner Poles -->
+        <div class="bamboo-pole horizontal top"></div>
+        <div class="bamboo-pole horizontal middle-1"></div>
+        <div class="bamboo-pole horizontal middle-2"></div>
+        <div class="bamboo-pole horizontal bottom"></div>
+        <div class="bamboo-pole vertical left"></div>
+        <div class="bamboo-pole vertical middle-left"></div>
+        <div class="bamboo-pole vertical middle-right"></div>
+        <div class="bamboo-pole vertical right"></div>
+
+        <!-- 1. Patrick Star -->
+        <div class="character-cell" data-char="patrick" tabindex="0" role="button" aria-label="Patrick Star birthday wish">
+          <div class="char-card-inner">
+            <div class="char-avatar-box patrick-bg">
+              <span class="char-emoji">⭐</span>
+              <div class="char-name-label">PATRICK STAR</div>
+            </div>
+            <div class="char-preview-quote">"Is mayonnaise an instrument? No, but you're amazing!..."</div>
+            <div class="char-tap-prompt">Tap to hear Patrick! 💬</div>
+          </div>
+        </div>
+
+        <!-- 2. Mr. Krabs -->
+        <div class="character-cell" data-char="krabs" tabindex="0" role="button" aria-label="Mr. Krabs birthday wish">
+          <div class="char-card-inner">
+            <div class="char-avatar-box krabs-bg">
+              <span class="char-emoji">🦀</span>
+              <div class="char-name-label">MR. EUGENE KRABS</div>
+            </div>
+            <div class="char-preview-quote">"Ag-ag-ag! Me boy struck pure gold with you, lassie!..."</div>
+            <div class="char-tap-prompt">Tap to hear Mr. Krabs! 💬</div>
+          </div>
+        </div>
+
+        <!-- 3. Pearl Krabs -->
+        <div class="character-cell" data-char="pearl" tabindex="0" role="button" aria-label="Pearl Krabs birthday wish">
+          <div class="char-card-inner">
+            <div class="char-avatar-box pearl-bg">
+              <span class="char-emoji">🐳</span>
+              <div class="char-name-label">PEARL KRABS</div>
+            </div>
+            <div class="char-preview-quote">"OMG, Coral! You are totally the most gorgeous girl alive!..."</div>
+            <div class="char-tap-prompt">Tap to hear Pearl! 💬</div>
+          </div>
+        </div>
+
+        <!-- 4. Mrs. Puff -->
+        <div class="character-cell" data-char="puff" tabindex="0" role="button" aria-label="Mrs. Puff birthday wish">
+          <div class="char-card-inner">
+            <div class="char-avatar-box puff-bg">
+              <span class="char-emoji">🐡</span>
+              <div class="char-name-label">MRS. PUFF</div>
+            </div>
+            <div class="char-preview-quote">"Oh Neptune! You get 100% on being the sweetest girlfriend!..."</div>
+            <div class="char-tap-prompt">Tap to hear Mrs. Puff! 💬</div>
+          </div>
+        </div>
+
+        <!-- 5. SpongeBob SquarePants (Center) -->
+        <div class="character-cell highlight-center" data-char="spongebob" tabindex="0" role="button" aria-label="SpongeBob SquarePants birthday wish">
+          <div class="char-card-inner">
+            <div class="char-avatar-box spongebob-bg">
+              <span class="char-emoji">🧽</span>
+              <div class="char-name-label">SPONGEBOB SQUAREPANTS</div>
+            </div>
+            <div class="char-preview-quote">"I'M READY! Happy Birthday to the sweetest soul in the sea!..."</div>
+            <div class="char-tap-prompt">Tap to hear SpongeBob! 💬</div>
+          </div>
+        </div>
+
+        <!-- 6. Squidward Tentacles -->
+        <div class="character-cell" data-char="squidward" tabindex="0" role="button" aria-label="Squidward Tentacles birthday wish">
+          <div class="char-card-inner">
+            <div class="char-avatar-box squidward-bg">
+              <span class="char-emoji">🐙</span>
+              <div class="char-name-label">SQUIDWARD TENTACLES</div>
+            </div>
+            <div class="char-preview-quote">"I usually despise everyone, but you actually have exquisite taste..."</div>
+            <div class="char-tap-prompt">Tap to hear Squidward! 💬</div>
+          </div>
+        </div>
+
+        <!-- 7. Sheldon J. Plankton & Karen -->
+        <div class="character-cell" data-char="plankton" tabindex="0" role="button" aria-label="Plankton and Karen birthday wish">
+          <div class="char-card-inner">
+            <div class="char-avatar-box plankton-bg">
+              <span class="char-emoji">🔬</span>
+              <div class="char-name-label">PLANKTON & KAREN</div>
+            </div>
+            <div class="char-preview-quote">"Karen calculated your boyfriend's love: Off the charts!..."</div>
+            <div class="char-tap-prompt">Tap to hear Plankton! 💬</div>
+          </div>
+        </div>
+
+        <!-- 8. Sandy Cheeks -->
+        <div class="character-cell" data-char="sandy" tabindex="0" role="button" aria-label="Sandy Cheeks birthday wish">
+          <div class="char-card-inner">
+            <div class="char-avatar-box sandy-bg">
+              <span class="char-emoji">🐿️</span>
+              <div class="char-name-label">SANDY CHEEKS</div>
+            </div>
+            <div class="char-preview-quote">"Howdy partner! You're sweeter than Texas pecan pie!..."</div>
+            <div class="char-tap-prompt">Tap to hear Sandy! 💬</div>
+          </div>
+        </div>
+
+        <!-- 9. Gary the Snail -->
+        <div class="character-cell" data-char="gary" tabindex="0" role="button" aria-label="Gary the Snail birthday wish">
+          <div class="char-card-inner">
+            <div class="char-avatar-box gary-bg">
+              <span class="char-emoji">🐌</span>
+              <div class="char-name-label">GARY THE SNAIL</div>
+            </div>
+            <div class="char-preview-quote">"Meow! (Translation: You are the purest angel in the universe!)..."</div>
+            <div class="char-tap-prompt">Tap to hear Gary! 💬</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cast Poster Reference Banner -->
+      <div class="cast-photo-reference-card">
+        <div class="reference-badge">📸 ORIGINAL BIKINI BOTTOM CAST PORTRAIT</div>
+        <div class="reference-img-container">
+          <img 
+            src="assets/images/spongebob_grid.jpg" 
+            alt="The 3x3 SpongeBob Cast Grid" 
+            class="reference-grid-img"
+          />
+        </div>
+        <p class="reference-caption">All 9 citizens of Bikini Bottom unanimously voted you the Loveliest Girl in the Ocean!</p>
+      </div>
+    </section>
+
+    <!-- SECTION 2: JELLYFISH FIELDS CATCHING MINI-GAME -->
+    <section class="jellyfish-section" id="jellyGame">
+      <div class="section-title-wrap">
+        <div class="jelly-sparkle-icon">🪼✨</div>
+        <h2 class="section-title">JELLYFISH FIELDS ADVENTURE</h2>
+        <p class="section-subtitle">Catch the pink dancing jellyfish with your net! Can you find the secret Queen Jellyfish?</p>
+      </div>
+
+      <div class="jellyfish-meadow-arena" id="jellyArena">
+        <div class="arena-kelp kelp-1"></div>
+        <div class="arena-kelp kelp-2"></div>
+        <div class="arena-kelp kelp-3"></div>
+        <div class="arena-kelp kelp-4"></div>
+
+        <!-- Game Controls Header inside meadow -->
+        <div class="arena-status-bar">
+          <div class="status-pill">
+            <span>Caught: </span>
+            <strong id="arenaScore">0</strong> Jellies
+          </div>
+          <div class="status-pill" id="queenStatus">
+            <span>Queen Jellyfish: </span>
+            <strong id="queenFoundText">Hidden in the fields...</strong>
+          </div>
+          <button id="spawnJellyBtn" class="sponge-secondary-btn">
+            <span>🪼 Spawn More Jellies!</span>
+          </button>
+        </div>
+
+        <!-- Interactive Floating Jellyfish Container -->
+        <div class="jelly-spawn-zone" id="jellyZone">
+          <!-- Jellies generated dynamically via script.js -->
+        </div>
+
+        <div class="arena-hint">
+          💡 Click or tap any jellyfish to catch it with SpongeBob's net! Catch the glowing golden Queen Jellyfish for a secret surprise!
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 3: BUILD THE ULTIMATE BIRTHDAY KRABBY PATTY -->
+    <section class="krabby-section" id="krabbyBuilder">
+      <div class="section-title-wrap">
+        <div class="burger-icon">🍔</div>
+        <h2 class="section-title">THE SECRET LOVE FORMULA</h2>
+        <p class="section-subtitle">Build the ultimate Birthday Krabby Patty stacked with special love ingredients!</p>
+      </div>
+
+      <div class="krabby-builder-layout">
+        <!-- Ingredients Shelf (Click to Add) -->
+        <div class="ingredients-shelf">
+          <h3 class="shelf-title">Select Ingredients to Stack:</h3>
+          <div class="ingredient-buttons-grid">
+            <button class="ing-btn" data-ing="bottom-bun">
+              <span class="ing-emoji">🍞</span>
+              <span class="ing-name">Toasted Bottom Bun</span>
+            </button>
+            <button class="ing-btn" data-ing="patty">
+              <span class="ing-emoji">🥩</span>
+              <span class="ing-name">Soulmate Sizzling Patty</span>
+            </button>
+            <button class="ing-btn" data-ing="cheese">
+              <span class="ing-emoji">🧀</span>
+              <span class="ing-name">Melted Joy Cheese</span>
+            </button>
+            <button class="ing-btn" data-ing="lettuce">
+              <span class="ing-emoji">🥬</span>
+              <span class="ing-name">Crispy Loyalty Lettuce</span>
+            </button>
+            <button class="ing-btn" data-ing="tomato">
+              <span class="ing-emoji">🍅</span>
+              <span class="ing-name">Sweet Hugs Tomato</span>
+            </button>
+            <button class="ing-btn" data-ing="pickles">
+              <span class="ing-emoji">🥒</span>
+              <span class="ing-name">Extra Kisses Pickles</span>
+            </button>
+            <button class="ing-btn" data-ing="love-sauce">
+              <span class="ing-emoji">💖</span>
+              <span class="ing-name">Secret Love Formula</span>
+            </button>
+            <button class="ing-btn" data-ing="top-bun">
+              <span class="ing-emoji">🍔</span>
+              <span class="ing-name">Sesame Seed Top Bun</span>
+            </button>
+          </div>
+
+          <div class="builder-actions">
+            <button id="resetBurgerBtn" class="sponge-outline-btn">↺ Reset Burger</button>
+            <button id="autoStackBtn" class="sponge-secondary-btn">✨ Perfect Chef Stack</button>
+          </div>
+        </div>
+
+        <!-- Plate & Stack View -->
+        <div class="burger-plate-stage">
+          <div class="plate-dish">
+            <div class="burger-vertical-stack" id="burgerStack">
+              <div class="stack-placeholder" id="stackPlaceholder">
+                <span>🍽️ The plate is ready! Click ingredients on the left to build the Birthday Krabby Patty!</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="formula-completion-box hidden" id="formulaBox">
+            <div class="secret-stamp">APPROVED BY MR. KRABS</div>
+            <h4>🎉 SECRET LOVE FORMULA COMPLETE!</h4>
+            <p>A masterpiece crafted with 100% genuine adoration, infinite cuddles, and lifetime devotion for my queen!</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 4: MESSAGE IN A NAUTICAL BOTTLE (HEARTFELT LOVE LETTER) -->
+    <section class="bottle-section" id="bottleLetter">
+      <div class="section-title-wrap">
+        <div class="bottle-icon">🍾</div>
+        <h2 class="section-title">MESSAGE IN A NAUTICAL BOTTLE</h2>
+        <p class="section-subtitle">Washed ashore from the sweetest depths of Bikini Bottom...</p>
+      </div>
+
+      <div class="bottle-scene-container">
+        <!-- Floating Bottle Graphic -->
+        <div class="nautical-bottle-wrap" id="bottleTrigger" role="button" tabindex="0" aria-label="Open message in a bottle">
+          <div class="glass-bottle">
+            <div class="bottle-cork"></div>
+            <div class="bottle-neck"></div>
+            <div class="bottle-body">
+              <div class="rolled-parchment-inside">
+                <span class="scroll-ribbon">🎀</span>
+              </div>
+              <div class="bottle-bubbles">
+                <span></span><span></span><span></span>
+              </div>
+            </div>
+          </div>
+          <div class="bottle-click-hint pulse-bounce">
+            👉 Tap the bottle to uncork the love letter! 📜
+          </div>
+        </div>
+
+        <!-- Parchment Love Letter Display -->
+        <div class="parchment-letter-wrapper" id="parchmentWrapper">
+          <div class="parchment-paper">
+            <div class="parchment-seal">💖</div>
+            
+            <h3 class="letter-salutation" id="letterSalutation">My Dearest Love,</h3>
+
+            <div class="letter-body-text" id="letterBody">
+              <p>
+                Happy Birthday to the girl who stole my heart faster than Plankton tries to steal the Krabby Patty formula!
+              </p>
+              <p>
+                Just like SpongeBob and Patrick, through every wacky adventure, jellyfish sting, and goofy day, 
+                having you in my life is the greatest treasure I could ever ask for. You make everything softer, sweeter, 
+                and endlessly brighter.
+              </p>
+              <p class="letter-quote">
+                "If you live to be a hundred, I want to live to be a hundred minus one day, so I never have to live without you."
+              </p>
+              <p>
+                Today, I wish you endless happiness, all your sweetest dreams coming true, lots of delicious treats, 
+                and all the warm cuddles in the universe. I love you more than all the bubbles in the ocean!
+              </p>
+            </div>
+
+            <div class="letter-signoff">
+              <div class="signoff-sub">Forever & Always Your Goofy Goober,</div>
+              <div class="signoff-name" id="letterSignoffName">Your Loving Boyfriend ❤️</div>
+            </div>
+
+            <div class="parchment-corner top-left-corner"></div>
+            <div class="parchment-corner top-right-corner"></div>
+            <div class="parchment-corner bottom-left-corner"></div>
+            <div class="parchment-corner bottom-right-corner"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 5: BIKINI BOTTOM MEMORIES (PHOTO GALLERY) -->
+    <section class="memories-section" id="photoGallery">
+      <div class="section-title-wrap">
+        <div class="photo-icon">📸</div>
+        <h2 class="section-title">BIKINI BOTTOM SCRAPBOOK</h2>
+        <p class="section-subtitle">Cherished memories of two Goofy Goobers in love!</p>
+      </div>
+
+      <div class="scrapbook-polaroid-grid">
+        <!-- Memory Card 1: The SpongeBob Movie Art -->
+        <div class="polaroid-card tilt-left">
+          <div class="polaroid-tape"></div>
+          <div class="polaroid-img-wrap">
+            <img src="assets/images/spongebob_movie.png" alt="SpongeBob Movie Crew" />
+          </div>
+          <div class="polaroid-caption">Two Goofy Goobers conquer the world together! 🍦</div>
+        </div>
+
+        <!-- Memory Card 2: 3x3 Cast Squad -->
+        <div class="polaroid-card tilt-right">
+          <div class="polaroid-tape"></div>
+          <div class="polaroid-img-wrap">
+            <img src="assets/images/spongebob_grid.jpg" alt="Bikini Bottom Friends" />
+          </div>
+          <div class="polaroid-caption">The entire ocean celebrating your special day! 🌊</div>
+        </div>
+
+        <!-- Memory Card 3: Couple Art Frame 1 -->
+        <div class="polaroid-card tilt-left-small">
+          <div class="polaroid-tape"></div>
+          <div class="polaroid-img-wrap illustration-placeholder couple-box-1">
+            <div class="custom-card-art">
+              <span class="custom-icon">🍍✨</span>
+              <p class="custom-art-text">"You are the pineapple under the sea of my heart!"</p>
+            </div>
+          </div>
+          <div class="polaroid-caption">Every single moment with you is pure magic! ✨</div>
+        </div>
+
+        <!-- Memory Card 4: Couple Art Frame 2 -->
+        <div class="polaroid-card tilt-right-small">
+          <div class="polaroid-tape"></div>
+          <div class="polaroid-img-wrap illustration-placeholder couple-box-2">
+            <div class="custom-card-art">
+              <span class="custom-icon">🍔❤️</span>
+              <p class="custom-art-text">"Best friends & soulmates for eternity!"</p>
+            </div>
+          </div>
+          <div class="polaroid-caption">My favorite person to share Krabby Patties with! 🍔</div>
+        </div>
+      </div>
+
+      <div class="photo-tip-box">
+        💡 <em>Tip: You can easily add your own couple photos into the <code>assets/images/</code> folder! Check the README for a simple 1-step guide!</em>
+      </div>
+    </section>
+
+    <!-- SECTION 6: KRUSTY KRAB BIRTHDAY CAKE & MAKE A WISH -->
+    <section class="cake-section" id="birthdayCake">
+      <div class="section-title-wrap">
+        <div class="cake-icon">🎂</div>
+        <h2 class="section-title">BLOW OUT THE BIRTHDAY CANDLES</h2>
+        <p class="section-subtitle">Make your sweetest wish, take a deep breath, and blow out the flames!</p>
+      </div>
+
+      <div class="cake-stage-container">
+        <!-- Giant Illustrated 3-Tier SpongeBob Cake -->
+        <div class="cake-wrapper" id="cakeWrapper">
+          
+          <!-- Candles Layer -->
+          <div class="cake-candles-row" id="candlesRow">
+            <div class="candle candle-1 active">
+              <div class="candle-flame"></div>
+              <div class="candle-wick"></div>
+              <div class="candle-stick"></div>
+            </div>
+            <div class="candle candle-2 active">
+              <div class="candle-flame"></div>
+              <div class="candle-wick"></div>
+              <div class="candle-stick"></div>
+            </div>
+            <div class="candle candle-3 active">
+              <div class="candle-flame"></div>
+              <div class="candle-wick"></div>
+              <div class="candle-stick"></div>
+            </div>
+            <div class="candle candle-4 active">
+              <div class="candle-flame"></div>
+              <div class="candle-wick"></div>
+              <div class="candle-stick"></div>
+            </div>
+            <div class="candle candle-5 active">
+              <div class="candle-flame"></div>
+              <div class="candle-wick"></div>
+              <div class="candle-stick"></div>
+            </div>
+          </div>
+
+          <!-- Tier 1: Top Pineapple Tier -->
+          <div class="cake-tier tier-top">
+            <div class="frosting-drips">
+              <span></span><span></span><span></span><span></span><span></span>
+            </div>
+            <div class="tier-label">🍍 SWEET & LOVELY 🍍</div>
+          </div>
+
+          <!-- Tier 2: Middle Seafoam Cream Tier -->
+          <div class="cake-tier tier-middle">
+            <div class="frosting-drips">
+              <span></span><span></span><span></span><span></span><span></span><span></span>
+            </div>
+            <div class="tier-label">💖 100% PURE HAPPINESS 💖</div>
+          </div>
+
+          <!-- Tier 3: Bottom Sandy Velvet Tier -->
+          <div class="cake-tier tier-bottom">
+            <div class="frosting-drips">
+              <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+            </div>
+            <div class="tier-label">👑 QUEEN OF MY HEART 👑</div>
+          </div>
+
+          <!-- Cake Stand -->
+          <div class="cake-stand"></div>
+        </div>
+
+        <!-- Wish Controls -->
+        <div class="cake-controls">
+          <button id="blowCandlesBtn" class="sponge-primary-btn big-pulse">
+            <span class="blow-icon">💨</span>
+            <span class="blow-text">BLOW OUT THE CANDLES!</span>
+          </button>
+          
+          <p class="cake-whisper">
+            Click the button to blow out all candles & release the celebratory confetti explosion!
+          </p>
+        </div>
+
+        <!-- Celebration Modal / Banner once blown -->
+        <div class="wish-granted-card hidden" id="wishGrantedCard">
+          <div class="trophy-sparkle">🏆</div>
+          <h3 class="wish-title">WISH SENT TO NEPTUNE! 🎉</h3>
+          <p class="wish-msg">
+            May every single wish in your heart come true this year! You deserve all the sunshine, laughter, and love in the world!
+          </p>
+          <button id="reigniteBtn" class="sponge-secondary-btn">
+            🕯️ Light Candles Again
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER: BIKINI BOTTOM SIGNOFF -->
+    <footer class="spongebob-footer">
+      <div class="footer-wood-plank">
+        <div class="gary-wave">
+          <span class="gary-emoji">🐌</span>
+          <span class="gary-speech">"Meow! (Happy Birthday, Queen!)"</span>
+        </div>
+        <p class="footer-love-text">
+          Crafted with 💛 & SpongeBob magic by your boyfriend for your special day.
+        </p>
+        <p class="footer-subtext">
+          Bikini Bottom © Pacific Ocean • All Rights Reserved for Love
+        </p>
+      </div>
+    </footer>
+
+  </main>
+
+  <!-- CHARACTER MODAL DIALOGUE POPUP -->
+  <div id="charModal" class="char-modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="modalCharName">
+    <div class="char-dialogue-box">
+      <button id="closeModalBtn" class="close-modal-btn" aria-label="Close message">✖</button>
+      
+      <div class="modal-char-avatar" id="modalCharAvatar">
+        <span id="modalCharEmoji">🧽</span>
+      </div>
+
+      <h3 class="modal-char-name" id="modalCharName">SpongeBob SquarePants</h3>
+      
+      <div class="modal-speech-bubble">
+        <p class="modal-char-quote" id="modalCharQuote">
+          "I'm ready! I'm ready!"
+        </p>
+      </div>
+
+      <div class="modal-fun-action">
+        <button id="charReactionBtn" class="sponge-secondary-btn">
+          ✨ Send Love Back!
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript -->
+  <script src="script.js"></script>
+</body>
+</html>
