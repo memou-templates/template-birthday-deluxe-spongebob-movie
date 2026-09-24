@@ -1,4 +1,4 @@
-# 🍍 SpongeBob Movie Birthday Experience (`birthday_template_3`) 🪼
+# 🍍 SpongeBob Movie Birthday Experience (`birthday_template_2`) 🪼
 
 A fully interactive, Bikini Bottom-themed birthday website crafted for your girlfriend with pure HTML5, CSS3, and modern vanilla JavaScript.
 
